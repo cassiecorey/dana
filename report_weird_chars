@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# this script prints out any weird chars found in the dataset
+# "weird chars" are any out of the range 0-128 in ASCII
+# it prints ASCII values and char (if possible)
+
+DATA_DIR=$1
+for CANDIDATE in $DATA_DIR/*; do
+	P_FILES=$(ls -1 $CANDIDATE/personality | wc -l)
+	W_C=$(find $CANDIDATE/personality -type f -name \*.txt -print0 | xargs -0 cat | wc -w)
+	QUESTIONS=$(($(find $CANDIDATE/qa -type f -name \*.txt -print0 | xargs -0 cat | wc -l)/2))
+	AVG_A_LENGTH=$(($(find $CANDIDATE/qa -type f -name \*.txt -print0 | xargs -0 cat | sed -n 'n;p' | wc -w)/$QUESTIONS))
+	AVG_Q_LENGTH=$(($(find $CANDIDATE/qa -type f -name \*.txt -print0 | xargs -0 cat | sed -n 'p;n' | wc -w)/$QUESTIONS))
+
+	# output stats to file
+	echo $CANDIDATE | sed 's|.*\/\(.*\)|\1|' >> data_stats.txt
+	echo "personality files:" $P_FILES >> data_stats.txt
+	echo "word count:" $W_C >> data_stats.txt
+	echo "question count:" $QUESTIONS >> data_stats.txt
+	echo "average question length:" $AVG_Q_LENGTH >> data_stats.txt
+	echo "average answer length:" $AVG_A_LENGTH >> data_stats.txt
+	echo "" >> data_stats.txt
+done

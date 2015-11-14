@@ -1,0 +1,28 @@
+carson
+personality files: 3
+word count: 11218
+question count: 8
+average question length: 36
+average answer length: 130
+
+clinton
+personality files: 4
+word count: 15400
+question count: 16
+average question length: 32
+average answer length: 98
+
+sanders
+personality files: 7
+word count: 31991
+question count: 17
+average question length: 46
+average answer length: 259
+
+trump
+personality files: 3
+word count: 58275
+question count: 26
+average question length: 19
+average answer length: 95
+
