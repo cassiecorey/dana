@@ -3,7 +3,7 @@ A Q&A model for the 2016 presidential candidates
 
 ##About
 ###Sources
-This model combines code from the following other GitHub repos:
+This model combines code from these other GitHub repos:
 
 [arkref](https://github.com/brendano/arkref)
 
@@ -13,7 +13,27 @@ This model combines code from the following other GitHub repos:
 
 The goal is to create a program that can be used to ask questions directed at one of four presidential candidates – Donald Trump, Ben Carson, Hillary Clinton, or Bernie Sanders – and respond in a way that shares some resemblance with how the candidate would realistically respond.
 
-##DATA
+##Using DANA
+###Install
+You can clone this repo or download the zip and unpack it.
+
+###Run
+####Answer
+Give the right permissions:
+```
+$ chmod +x answer
+```
+```
+$ python ./answer /path/to/candidate/personality/file.txt questions.txt
+```
+Still todo: modify this so that it can be run on a folder instead of one file at a time.
+
+You may also need to
+```
+$ source activate python2
+```
+
+##Data
 ###Directory Structure
 Data folders should be formatted using the structure below:
 ```
@@ -25,7 +45,10 @@ Data folders should be formatted using the structure below:
         └── *.txt	
 ```
 
-###To clean a data file of some common non ASCII characters:
+###File Format
+QA files should be formated with questions and answers each on separate lines and not spanning more than one line (no '\n' except between question and answer). They should also not have any unneccessary '\n' anywhere (at the end for example) as this might skew the results of ```data_stats```.
+
+###To clean a file of some common non ASCII characters:
 ```
 $ sed -i.bak -f clean_file file.txt
 ```
@@ -43,3 +66,26 @@ If you find non-ASCII characters that aren't already in `clean_file` feel free t
 ```
 s/\char/\replacement/g
 ```
+If you encounter
+```
+sed: RE error: illegal byte sequence
+```
+try running
+```
+$ unset LANG
+```
+
+###Gathering Statistics
+```
+$ data_stats /path/to/data
+```
+Will create or update a file named data_stats.txt containing:
+```
+candidate
+personality files: n
+word count: n
+question count: n
+average question length: n
+average answer length: n
+```
+for each candidate in your data folder.

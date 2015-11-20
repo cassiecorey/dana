@@ -1,5 +1,5 @@
-# ask
-# 11-411 NLP Spring 2013, Group 6
+# to run: python ask.py article.txt n
+# output: n questions about the provided article
 
 # Useful tools which should be pre-installed
 import os, sys, errno
@@ -23,8 +23,6 @@ if __name__ == '__main__':
 
   # Pre-process article content.
   article_content = coref.process(path_to_article)
-
-  # Should probably apply co-reference resolution to article content here.
 
   # Fetch sentence candidates that can be converted into questions.
   selected_content = questionContentSelector.process(article_content)

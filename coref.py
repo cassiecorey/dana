@@ -16,7 +16,6 @@ pronouns = set(["he", "she", "it", "its", "it's", "him", "her", "his","they",
 resolved_articles = {}
 
 # Runs coreference resolution on the article using arkref.
-# This still needs to be implemented.
 def process(path_to_article):
   original_path = path_to_article
   try:
