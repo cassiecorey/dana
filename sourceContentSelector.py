@@ -41,9 +41,9 @@ def getScoredSentences(question, article):
 # Scores a sentence based on how well we think it answers the question
 def score(question, sentence):
     score = 0
-    sentence = map(ps.stem, sentence)
+    sentence = list(map(ps.stem, sentence))
     keywords = getKeywords(question)
-    question = map(ps.stem, question)
+    question = list(map(ps.stem, question))
     score += proximity(keywords, sentence)
     question_ngrams = count_ngrams(question, MAX_NGRAMS, True)
     sentence_ngrams = count_ngrams(sentence, MAX_NGRAMS, True)
@@ -73,8 +73,8 @@ def count_ngrams(tokens, n, all_smaller=False):
   """
 
   counts = collections.Counter()
-  for k in xrange(1 if all_smaller else n, n+1):
-    for i in xrange(len(tokens)-k+1):
+  for k in range(1 if all_smaller else n, n+1):
+    for i in range(len(tokens)-k+1):
       counts[tuple(tokens[i:i+k])] += 1
 
   return counts
@@ -95,7 +95,7 @@ def bleu_score(ref_ngrams, ref_len, pred_ngrams, pred_len, n):
   ngram_score = np.zeros(n, dtype=np.float32) + 0.1
 
   # compute the ngram intersections
-  for ngram, c in ref_ngrams.iteritems():
+  for ngram, c in ref_ngrams.items():
     if len(ngram) > n: continue
 
     k = min(c, pred_ngrams[ngram])

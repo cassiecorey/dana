@@ -9,7 +9,7 @@
 # has only been tested on linux and mac
 # and requires GraphViz to be installed - the 'dot' command.
 
-from __future__ import with_statement
+
 import sys,os,time,pprint,re
 
 nounish = '#700070'
@@ -169,10 +169,10 @@ def dot_from_tuples(tuples):
   dot = "digraph { "
   for t in tuples:
     if t[0]=="NODE":
-      more = " ".join(['%s="%s"' % (k,v) for (k,v) in t[3].items()]) 
+      more = " ".join(['%s="%s"' % (k,v) for (k,v) in list(t[3].items())]) 
       dot += """%s [label="%s" %s]; """ % (t[1], t[2], more)
     elif t[0]=="EDGE":
-      more = " ".join(['%s="%s"' % (k,v) for (k,v) in t[3].items()]) 
+      more = " ".join(['%s="%s"' % (k,v) for (k,v) in list(t[3].items())]) 
       dot += """ %s -> %s [%s]; """ % (t[1],t[2], more)
   dot += "}"
   return dot
@@ -180,7 +180,7 @@ def dot_from_tuples(tuples):
 def call_dot(dotstr, filename="/tmp/tmp.png", format='png'):
   dot = "/tmp/tmp.%s.dot" % os.getpid()
   with open(dot, 'w') as f:
-    print>>f, dotstr
+    print(dotstr, file=f)
   if False and format=='pdf':
     os.system("dot -Teps < " +dot+ " | ps2pdf -dEPSCrop -dEPSFitPage - > " + filename)
   else:

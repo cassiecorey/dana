@@ -29,9 +29,9 @@ if __name__ == '__main__':
 
   # Use POS Tagging and Transformation rules to generate questions
   questions = questionFromSentence.process(selected_content)
-  print(len(questions))
+  print((len(questions)))
   # Rank generated questions and return top [:num_questions]
 
   questions = questions[:num_questions]
   for question in questions:
-    print(question + "\n")
+    print((question + "\n"))

@@ -1,7 +1,12 @@
 #Timeline
 
 - [] Complete Data Collection and Annotation
-- [] Convert all to python3
+- [x] Convert all to python3
+
+used `2to3 -w file.py` on everything
+
+created an anaconda deprecation warning that can be ignored: `DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() instead`
+
 - [] Get Pickle Working
 
 use `markov.load` and `markov.dump` for answer/ask pickle too

@@ -10,7 +10,7 @@ import nltk
 # score the usefulness of a sentence.
 def entity_score(sentence):
   tokens = nltk.word_tokenize(sentence)
-  tokensU = map(lambda (x): x.upper, tokens)
+  tokensU = [x.upper for x in tokens]
   if (2 < len(tokens) and len(tokens) < 12):
     if ("IS" in tokensU or "WAS" in tokensU or
         "WERE" in tokensU or "BEING" in tokensU or
@@ -47,5 +47,5 @@ def sentence_score(sentence):
 # RETURNS list of candidate strings
 def process(source_text):
   sentences = nltk.sent_tokenize(source_text)
-  sentences = sorted(sentences, key = lambda (x): -sentence_score(x))
+  sentences = sorted(sentences, key = lambda x: -sentence_score(x))
   return sentences

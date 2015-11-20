@@ -40,4 +40,4 @@ if __name__ == '__main__':
 
   article = coref.process(article_name)
   for question in questions:
-    print answer(question, article)
+    print(answer(question, article))
