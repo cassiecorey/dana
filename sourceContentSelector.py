@@ -8,6 +8,7 @@ import nltk
 from nltk.stem import PorterStemmer
 import collections
 import numpy as np
+import pickle
 
 # Ignore words that don't have these parts of speech when computing keywords
 key_POS = set(["CD","FW","NN","NNS","NNP","NPS","VB","VBD","VBG","VBN","VBP","VBZ"])
@@ -28,7 +29,13 @@ def getKeywords(question):
 
 # Given a question, return a list of each sentence in the article
 # with a score attached to it
-def getScoredSentences(question, article):
+def getScoredSentences(question, article, candidate):
+  # Try saving time by loading from pickle
+  scored_sentences = load(candidate)
+  if scored_sentences != None:
+    return scored_sentences
+
+  # If it wasn't in pickle...
   scored_sentences = []
   sentences = nltk.tokenize.sent_tokenize(article)
   for sentence in sentences:
@@ -36,7 +43,19 @@ def getScoredSentences(question, article):
       tokenized = nltk.word_tokenize(sentence.lower())
       s = score(question, tokenized)
       scored_sentences.append((sentence, s))
+  dump(candidate, scored_sentences)
   return scored_sentences
+
+# Takes an array of candidate verbosity responses and scores them
+def getScoredVResponses(question, responses, candidate):
+  scored_responses = []
+  for response in responses:
+    if response.strip() == "": continue
+    tokenized = nltk.word_tokenize(response.lower())
+    s = score(question, tokenized)
+    print("\tSCORE: %d"%s)
+    scored_responses.append((response, s))
+  return scored_responses
 
 # Scores a sentence based on how well we think it answers the question
 def score(question, sentence):
@@ -45,23 +64,28 @@ def score(question, sentence):
     keywords = getKeywords(question)
     question = list(map(ps.stem, question))
     score += proximity(keywords, sentence)
-    question_ngrams = count_ngrams(question, MAX_NGRAMS, True)
-    sentence_ngrams = count_ngrams(sentence, MAX_NGRAMS, True)
-    precision, recall = bleu_score(question_ngrams, len(question), sentence_ngrams, len(sentence), 5)
-    f1 = (2*precision*recall)/(precision+recall)
-    score += 2*f1
+    # COREFERENCE (NOT WORKINGs)
+    # question_ngrams = count_ngrams(question, MAX_NGRAMS, True)
+    # sentence_ngrams = count_ngrams(sentence, MAX_NGRAMS, True)
+    # precision, recall = bleu_score(question_ngrams, len(question), sentence_ngrams, len(sentence), 5)
+    # f1 = (2*precision*recall)/(precision+recall)
+    # print("F1 Score: %d"%f1)
+    # score += 2*f1
     return score
 
-# Finds the shortest window in the targest sentence
-# in which all keywords appear, and assigns a score.
 def proximity(keywords, sentence):
-    length = len(sentence)
-    for i in range(len(keywords), length+1):
-        for j in range(length+1-i):
-            words = set(sentence[j:i+j])
-            if keywords <= words:
-                return 1 - i/length
-    return 0
+  score = 0
+  for key in keywords:
+    if key in sentence:
+      score += 1
+  return score
+    # length = len(sentence)
+    # for i in range(len(keywords), length+1):
+    #     for j in range(length+1-i):
+    #         words = set(sentence[j:i+j])
+    #         if keywords <= words:
+    #             return 1 - i/length
+    # return 0
 
 # From YC
 def count_ngrams(tokens, n, all_smaller=False):
@@ -113,3 +137,20 @@ def bleu_score(ref_ngrams, ref_len, pred_ngrams, pred_len, n):
   recall = np.exp(recall)
 
   return precision, recall
+
+def load(candidate):
+  with open(os.path.expanduser("data/%s/personality/pickle.txt"%candidate), "rb") as f:
+    try:
+      return pickle.load(f)
+    except:
+      return None
+
+def dump(candidate, scored_sentences):
+  with open(os.path.expanduser("data/%s/personality/pickle.txt"%candidate), "wb") as f:
+    try:
+      pickle.dump(scored_sentences, f)
+      return True
+    except:
+      print("Problem dumping scored sentences into pickle.txt")
+      return False
+

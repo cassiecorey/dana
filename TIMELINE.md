@@ -9,11 +9,11 @@
     
     `DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() instead`
 
-- [ ] **Get Pickle Working**
+- [x] **Get Pickle Working**
 
-    use `markov.load` and `markov.dump` for answer/ask pickle too
+    sourceContentSelector.getScoredSentences() was taking the longest so this uses pickle to save scored sentences.    
 
-- [ ] **Make Answers Verbose**
+- [x] **Make Answers Verbose**
 
     Change `rep.do_tokens` to return string instead of printing...or just call it afterwards
     ```
@@ -22,13 +22,13 @@
     rep.do_train("3 --noparagraphs ./../data/candidate/personality/*")
     rep.do_tokens("50")
     ```
-    Add seed to verbosity....way in the future
+    Take 100 ```do_sentences(verbosity + prefix)```, score them on proximity and return the most likely match.
 
 - [ ] **Set up Pre-Processing**
 - [ ] **Implement Question Train/Test**
 - [ ] **Create UI**
 - [ ] **Format Response Structure**
-- [ ] **Allow Candidate Specification**
+- [x] **Allow Candidate Specification**
 
     change `python ask.py article.txt num_questions` to `python ask.py candidate num_questions`
 

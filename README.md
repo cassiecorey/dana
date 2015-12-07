@@ -19,19 +19,10 @@ You can clone this repo or download the zip and unpack it.
 
 ###Run
 ####Answer
-Give the right permissions:
 ```
-$ chmod +x answer
+$ python answer.py candidate questions.txt
 ```
-```
-$ python ./answer /path/to/candidate/personality/file.txt questions.txt
-```
-Still todo: modify this so that it can be run on a folder instead of one file at a time.
 
-You may also need to
-```
-$ source activate python2
-```
 
 ##Data
 ###Directory Structure
