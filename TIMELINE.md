@@ -26,6 +26,10 @@
 
 - [ ] **Set up Pre-Processing**
 - [ ] **Implement Question Train/Test**
+- [ ] **Naive Bayes**
+
+    Use a N-B classifier to calculate log-probabilities from each doc based on keywords from the quesiton. Whichever doc has the highest keyword-log-probability match-up wins and is used for answer generation.
+
 - [ ] **Create UI**
 - [ ] **Format Response Structure**
 - [x] **Allow Candidate Specification**

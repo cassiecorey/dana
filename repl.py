@@ -143,7 +143,6 @@ Wildcards are allowed.
 option is given, paragraph breaks are treated as spaces and discarded, rather
 than a separate token.
 """
-        print(args)
         paths = [path
                  for ps in args["<path>"]
                  for path in glob.glob(os.path.expanduser(ps))]

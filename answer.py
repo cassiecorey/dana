@@ -41,14 +41,18 @@ def answer(question, article, candidate):
 
 def verbosify(question, candidate, verbosity, answer):
   print("5: Making the answer verbose")
+  rep = repl.Repl()
   rep.do_train("6 --noparagraphs data/%s/personality/all.txt"%candidate)
   responses = []
+  
   for i in range(0,10):
     response = rep.do_sentences([int(verbosity),tuple(answer.split())])
-    print(response)
+    # re-train because this makes it generate a new response
+    rep.do_train("6 --noparagraphs data/%s/personality/all.txt"%candidate)
     responses.append(response)
   
   print("6: Scoring the markov generated responses")
+  question = nltk.tokenize.word_tokenize(question)
   scored_responses = sourceContentSelector.getScoredVResponses(question, responses, candidate)
   top = max(scored_responses, key = lambda s: s[1])
   return top[0]
@@ -65,7 +69,8 @@ if __name__ == '__main__':
   for question in questions:
     ans = answer(question, article, candidate)
     verbose = verbosify(question, candidate, verbosity, ans)
-    print(ans+verbose)
+    print("7: And our final answer from %s is:"%candidate)
+    print(ans+ " " + verbose)
 
 
 

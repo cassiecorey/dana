@@ -11,7 +11,9 @@ import numpy as np
 import pickle
 
 # Ignore words that don't have these parts of speech when computing keywords
-key_POS = set(["CD","FW","NN","NNS","NNP","NPS","VB","VBD","VBG","VBN","VBP","VBZ"])
+# key_POS = set(["CD","FW","NN","NNS","NNP","NPS","VB","VBD","VBG","VBN","VBP","VBZ"])
+# What if the only key words were nouns....
+key_POS = set(["NN","NNS","NNP", "NNP","NNPS"])
 # auxiliary verbs we should ignore
 aux = set(["is", "was", "did", "does", "do", "were", "are"])
 
@@ -53,7 +55,6 @@ def getScoredVResponses(question, responses, candidate):
     if response.strip() == "": continue
     tokenized = nltk.word_tokenize(response.lower())
     s = score(question, tokenized)
-    print("\tSCORE: %d"%s)
     scored_responses.append((response, s))
   return scored_responses
 
@@ -76,8 +77,7 @@ def score(question, sentence):
 def proximity(keywords, sentence):
   score = 0
   for key in keywords:
-    if key in sentence:
-      score += 1
+    score += sentence.count(key)
   return score
     # length = len(sentence)
     # for i in range(len(keywords), length+1):
