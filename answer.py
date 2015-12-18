@@ -8,7 +8,6 @@ import itertools
 import nltk
 import questionClassifier
 import sourceContentSelector
-import coref
 import repl
 
 # To answer yes/no question, we want to just answer yes or no,
@@ -65,7 +64,7 @@ if __name__ == '__main__':
   verbosity = sys.argv[3]
   rep = repl.Repl()
 
-  article = coref.process("data/%s/personality/all.txt"%candidate)
+  article = open("data/%s/personality/all.txt"%candidate).read()
   for question in questions:
     ans = answer(question, article, candidate)
     verbose = verbosify(question, candidate, verbosity, ans)
