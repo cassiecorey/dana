@@ -7,8 +7,7 @@ import subprocess
 import itertools
 import nltk
 import questionClassifier
-import sourceContentSelector
-import repl
+import util
 
 # To answer yes/no question, we want to just answer yes or no,
 # and not return a  whole sentence. We do this by checking for
@@ -18,58 +17,40 @@ def contains_negative(sent):
 
 # Answers a question from the information in article.
 # Ranks all the sentences and then returns the top choice.
-def answer(question, article, candidate):
+def answer(question, candidate):
   question = question.strip().rstrip("?").lower()
   
   print("1: Classify the question")
   question_type = questionClassifier.process(question)
-  
-  print("2: Tokenize the question")
-  question = nltk.tokenize.word_tokenize(question)
-  
-  print("3: Score the data sentences against the question")
-  relevant = sourceContentSelector.getScoredSentences(question, article, candidate)
-  
-  print("4: Return the most likely answer:")
-  top = max(relevant, key = lambda s: s[1])
-  print(top)
-  if question_type == "BOOLEAN":
-    if contains_negative(top): return "No"
-    else: return "Yes"
-  else: return top[0]
 
-def verbosify(question, candidate, verbosity, answer):
-  print("5: Making the answer verbose")
-  rep = repl.Repl()
-  rep.do_train("6 --noparagraphs data/%s/personality/all.txt"%candidate)
-  responses = []
+  print("2: Locate a top-scoring file")
+  top_file, path = util.get_top_file(question, candidate)
   
-  for i in range(0,10):
-    response = rep.do_sentences([int(verbosity),tuple(answer.split())])
-    # re-train because this makes it generate a new response
-    rep.do_train("6 --noparagraphs data/%s/personality/all.txt"%candidate)
-    responses.append(response)
-  
-  print("6: Scoring the markov generated responses")
-  question = nltk.tokenize.word_tokenize(question)
-  scored_responses = sourceContentSelector.getScoredVResponses(question, responses, candidate)
-  top = max(scored_responses, key = lambda s: s[1])
-  return top[0]
+  if path=="qa":
+    return util.get_qa_answer(question, candidate, top_file)
+
+  print("3: Locate a top-scoring sentence within the file")
+  top_sentence = util.get_top_sentence(question, candidate, path, top_file)
+  # top_sentence = "This campaign is about the needs of the American people. "
+
+  print("4: Calculate candidate verbosity")
+  verbosity = util.get_verbosity(candidate)
+
+  print("5: Make the answer verbose")
+  answer = top_sentence + " " + util.verbosify(question, candidate, verbosity, top_sentence)
+
+  return answer
+
 
 
 # The main script
 if __name__ == '__main__':
   candidate = sys.argv[1]
-  questions = open(sys.argv[2]).read().split("\n")
-  verbosity = sys.argv[3]
-  rep = repl.Repl()
+  question = open(sys.argv[2]).read()
 
-  article = open("data/%s/personality/all.txt"%candidate).read()
-  for question in questions:
-    ans = answer(question, article, candidate)
-    verbose = verbosify(question, candidate, verbosity, ans)
-    print("7: And our final answer from %s is:"%candidate)
-    print(ans+ " " + verbose)
+  ans = answer(question, candidate)
+  print("--------And our final answer from %s is...---------"%candidate)
+  print(ans)
 
 
 
