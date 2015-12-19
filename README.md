@@ -33,7 +33,7 @@ Data folders should be formatted using the structure below:
     ├── personality
     │   └── *.txt
     └── qa
-        └── *.txt	
+        └── QA.txt	
 ```
 
 ###File Format
