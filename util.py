@@ -12,6 +12,11 @@ from collections import Counter
 
 ps = PorterStemmer()
 
+# Since answers that come from question-answer data are often better suited
+# for response to a question, we give question-file scores a bit of a boost
+# when the file is in the qa path.
+qa_factor = 1.5
+
 #####################################################
 ################ PROCESSING THINGS ##################
 #####################################################
@@ -90,7 +95,7 @@ def get_top_file(question, candidate):
 	# because they're better for spawning answers
 	for f in os.listdir(os.getcwd()+"/data/%s/qa/"%candidate):
 		if f.endswith(".txt"):
-			file_scores[(f, "qa")] = score_sent_file(question_kw, candidate, "qa", f)*2
+			file_scores[(f, "qa")] = score_sent_file(question_kw, candidate, "qa", f)*qa_factor
 	print(file_scores)
 	return file_scores.most_common(1)[0][0]
 
@@ -137,11 +142,16 @@ def score_kw_kw(kw1, kw2):
 # Takes: keyword list, string, string, string
 # Returns: int
 def score_sent_file(sentence_kw, candidate, path, filename):
-	score = 0
+	score = 1
 	keymap = preprocess_file(candidate, path, filename)
 	for key_word in sentence_kw:
 		score += keymap[key_word]
 
+	# If the file had none of the keywords in it return 0
+	if score == 1:
+		return 0
+
+	# Otherwise normalize the score a bit compared to the length of the file
 	# This is necessary to give the QA guys a shot at answering some questions...
 	f = open("data/%s/%s/%s"%(candidate, path, filename)).read()
 	num_s = len(nltk.sent_tokenize(f))
